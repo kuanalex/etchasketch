@@ -1,59 +1,53 @@
-const container = document.getElementById("container");
-document.getElementById("resetGrid").innerHTML = "Click to set grid!";
-// makeRows(16, 16);
-// changeColor();
-resetGrid();
+const gridContainer = document.querySelector("#grid-container");
+const resetButton = document.querySelector("#reset-button");
 
-function makeRows(rows, cols) {
-    container.style.setProperty('--grid-rows', rows);
-    container.style.setProperty('--grid-cols', cols);
-    for (c = 0; c < (rows * cols); c++) {
-        let cell = document.createElement("div");
-        cell.innerText = (c + 1);
+window.addEventListener("load", setDefaultGrid);
+resetButton.addEventListener("click", changeSize);
 
-        container.appendChild(cell).className = "grid-item";
-    };
-};
-
-function changeColor(color) {
-    var items = document.querySelectorAll(".grid-item");
-
-    items.forEach(item => {
-        item.addEventListener("mouseenter", function (event) {
-            event.target.style.background = random_rgba();
-        })
-    })
+function setDefaultGrid() {
+  setGridSize(16);
+  fillGrid(16);
 }
 
-function resetGrid() {
-    var resetButton = document.querySelector("button");
-    resetButton.addEventListener("click", () => resetColor());
+function setGridSize(size) {
+  gridContainer.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
 }
 
-function resetColor() {
-    var grids = document.querySelectorAll(".grid-item");
-
-    grids.forEach(grid => {
-        grid.style.background = "white";
-    })
-
-    askUserForGrid();
+function fillGrid(size) {
+  for (let i = 0; i < size * size; i++) {
+    const gridElement = document.createElement("div");
+    gridElement.classList = "grid-element";
+    gridElement.addEventListener("mouseover", changeColor);
+    gridContainer.appendChild(gridElement);
+  }
 }
 
-function askUserForGrid() {
-    let n = prompt("Please enter the number of sqaures per side of the grid: ");
-    if (n <= 20) {
-        makeRows(n, n);
-        changeColor();
+function changeColor(e) {
+  const randomR = Math.floor(Math.random() * 256);
+  const randomG = Math.floor(Math.random() * 256);
+  const randomB = Math.floor(Math.random() * 256);
+  e.target.style.backgroundColor = `rgb(${randomR}, ${randomG}, ${randomB})`;
+}
+
+function changeSize() {
+  let newSize = prompt("Enter new size");
+
+  if (newSize !== null) {
+    newSize = parseInt(newSize);
+    if (newSize < 1 || newSize > 64 || Number.isNaN(newSize)) {
+      alert("Enter a number from 1-64 range");
+      changeSize();
     } else {
-        alert("The max value is 100");
+      clearGrid();
+      setGridSize(newSize);
+      fillGrid(newSize);
     }
-
+  }
 }
 
-function random_rgba() {
-    var o = Math.round,
-        r = Math.random,
-        s = 255;
-    return 'rgba(' + o(r() * s) + ',' + o(r() * s) + ',' + o(r() * s) + ',' + r().toFixed(1) + ')';
+function clearGrid() {
+  const gridArray = Array.from(gridContainer.childNodes);
+  gridArray.forEach((element) => {
+    gridContainer.removeChild(element);
+  });
 }
