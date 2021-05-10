@@ -1,7 +1,7 @@
 const container = document.getElementById("container");
-document.getElementById("resetGrid").innerHTML = "Click to reset grid!";
-makeRows(16, 16);
-changeColor();
+document.getElementById("resetGrid").innerHTML = "Click to set grid!";
+// makeRows(16, 16);
+// changeColor();
 resetGrid();
 
 function makeRows(rows, cols) {
@@ -9,7 +9,7 @@ function makeRows(rows, cols) {
     container.style.setProperty('--grid-cols', cols);
     for (c = 0; c < (rows * cols); c++) {
         let cell = document.createElement("div");
-        // cell.innerText = (c + 1);
+        cell.innerText = (c + 1);
 
         container.appendChild(cell).className = "grid-item";
     };
@@ -42,7 +42,7 @@ function resetColor() {
 
 function askUserForGrid() {
     let n = prompt("Please enter the number of sqaures per side of the grid: ");
-    if (n <= 100) {
+    if (n <= 20) {
         makeRows(n, n);
         changeColor();
     } else {
